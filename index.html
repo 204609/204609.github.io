@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>204609</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="blackprozac" />
+</head>
+<body>
+  <div class="fade-overlay" id="fade"></div>
+  <div class="flicker-overlay" id="flicker"></div>
+  <div class="chat-container glitch" id="chatWrap">
+    <div id="chat" class="chat-box">
+
+      <div id="typingIndicator" class="typing">typing...</div>
+    </div>
+
+    <div class="input-area">
+      <input id="userInput" type="text" placeholder="type something…" maxlength="500" />
+      <button id="sendBtn" onclick="handleSend()">Send</button>
+    </div>
+  </div>
+
+  <div id="wallScreen" class="wall-screen hidden">
+    <div class="wall-text">
+      sarim bhai logo bana do lagana hai yaha.
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
