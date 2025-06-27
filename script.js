@@ -111,29 +111,8 @@ function addMessage(text, sender) {
   sfxPuck.currentTime = 0;
   sfxPuck.play().catch(() => {});
   
-function addMessage(text, sender) {
-  const wrapper = document.createElement("div");
-  wrapper.className = `message-wrapper ${sender}`;
+  
 
-  const bubble = document.createElement("div");
-  bubble.className = `message animate-bubble`;
-
-  bubble.textContent = text.trim();
-
-  if (sender === "user") {
-    bubble.classList.add("user-bubble");
-  } else {
-    bubble.classList.add("nova-bubble");
-  }
-
-  wrapper.appendChild(bubble);
-  chat.insertBefore(wrapper, typingIndicator);
-  chat.scrollTop = chat.scrollHeight;
-
-  sfxPuck.currentTime = 0;
-  sfxPuck.play().catch(() => {});
-
-}
 }
 
 function showTyping() {
@@ -322,5 +301,21 @@ function startNovaExperience() {
     }
   }, 300); // match crossfade smoothness
 }
+function triggerGlowFlash() {
+  const bg = document.getElementById('glowBg');
+  bg.classList.add('glow-flash');
+  bg.addEventListener('animationend', function cleanup(e) {
+    if (e.animationName === 'bg-flash-glow') {
+      bg.classList.remove('glow-flash');
+      bg.removeEventListener('animationend', cleanup);
+    }
+  });
+}
 
+// Wrap addMessage to also trigger glow
+const originalAddMessage = addMessage;
+addMessage = function(text, sender) {
+  originalAddMessage(text, sender);
+  triggerGlowFlash();
+};
 window.onload = startNovaExperience;
