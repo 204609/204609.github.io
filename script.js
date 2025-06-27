@@ -111,9 +111,33 @@ function addMessage(text, sender) {
   sfxPuck.currentTime = 0;
   sfxPuck.play().catch(() => {});
   
-const bg = document.getElementById("bgGlow");
-bg.classList.add("flash");
-setTimeout(() => bg.classList.remove("flash"), 300);
+function addMessage(text, sender) {
+  const wrapper = document.createElement("div");
+  wrapper.className = `message-wrapper ${sender}`;
+
+  const bubble = document.createElement("div");
+  bubble.className = `message animate-bubble`;
+
+  bubble.textContent = text.trim();
+
+  if (sender === "user") {
+    bubble.classList.add("user-bubble");
+  } else {
+    bubble.classList.add("nova-bubble");
+  }
+
+  wrapper.appendChild(bubble);
+  chat.insertBefore(wrapper, typingIndicator);
+  chat.scrollTop = chat.scrollHeight;
+
+  sfxPuck.currentTime = 0;
+  sfxPuck.play().catch(() => {});
+
+  // Trigger glow flash
+  const bg = document.getElementById("bgGlow");
+  bg.classList.add("flash");
+  setTimeout(() => bg.classList.remove("flash"), 800); // allow fade-out
+}
 }
 
 function showTyping() {
