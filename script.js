@@ -133,10 +133,6 @@ function addMessage(text, sender) {
   sfxPuck.currentTime = 0;
   sfxPuck.play().catch(() => {});
 
-  // Trigger glow flash
-  const bg = document.getElementById("bgGlow");
-  bg.classList.add("flash");
-  setTimeout(() => bg.classList.remove("flash"), 800); // allow fade-out
 }
 }
 
