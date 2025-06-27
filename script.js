@@ -111,9 +111,9 @@ function addMessage(text, sender) {
   sfxPuck.currentTime = 0;
   sfxPuck.play().catch(() => {});
   
-  const bg = document.getElementById("bgGlow");
-  bg.classList.add("reactive");
-  setTimeout(() => bg.classList.remove("reactive"), 300);
+const bg = document.getElementById("bgGlow");
+bg.classList.add("flash");
+setTimeout(() => bg.classList.remove("flash"), 300);
 }
 
 function showTyping() {

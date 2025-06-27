@@ -1,38 +1,44 @@
-/* ----- GLOW BACKGROUND ----- */
+/* ------------------------------
+   🌟 BACKGROUND RAY GLOW EFFECT
+------------------------------- */
 .bg-glow {
   position: fixed;
   top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 40%, transparent 70%);
+  width: 100vw;
+  height: 100vh;
   z-index: -1;
-  opacity: 0.4;
-  animation: glowPulse 6s ease-in-out infinite;
-  filter: blur(6px) brightness(1.2);
-  transition: filter 0.3s ease, opacity 0.3s ease;
   pointer-events: none;
+
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.25) 0%, transparent 40%),
+              repeating-radial-gradient(circle at center, rgba(255,255,255,0.1) 0px, transparent 8px, rgba(255,255,255,0.1) 16px);
+  background-blend-mode: screen;
+  filter: blur(30px) brightness(1.2) contrast(1.2) saturate(1.3);
+  opacity: 0.35;
+  animation: subtleGlow 8s ease-in-out infinite;
+  transition: opacity 0.4s ease, filter 0.4s ease;
 }
 
-@keyframes glowPulse {
+.bg-glow.flash {
+  opacity: 1 !important;
+  filter: blur(10px) brightness(2.5) contrast(1.5) saturate(1.6);
+}
+
+@keyframes subtleGlow {
   0%, 100% {
+    opacity: 0.35;
     transform: scale(1);
-    opacity: 0.4;
-    filter: blur(6px) brightness(1.2);
+    filter: blur(30px) brightness(1.2) contrast(1.2);
   }
   50% {
+    opacity: 0.5;
     transform: scale(1.05);
-    opacity: 0.8;
-    filter: blur(6px) brightness(1.6);
+    filter: blur(40px) brightness(1.6) contrast(1.4);
   }
 }
 
-.bg-glow.reactive {
-  filter: blur(6px) brightness(2.5) !important;
-  opacity: 1 !important;
-}
-
-
-/* ----- REST OF YOUR ORIGINAL CSS STAYS BELOW THIS LINE ----- */
+/* ------------------------------
+   ✨ REST OF YOUR CHAT UI BELOW
+------------------------------- */
 
 body {
   margin: 0;
@@ -130,13 +136,11 @@ body {
   animation: bubble-fade-in 0.4s ease-out;
 }
 
-/* Bot bubble */
 .nova-bubble {
   background-color: #4e5058;
   color: #dcddde;
 }
 
-/* User bubble */
 .user-bubble {
   background-color: #5865f2;
   color: white;
