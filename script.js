@@ -28,6 +28,9 @@ function initAudioContext() {
   try {
     sfxPuck.play().catch(() => {});
       bgEnd.load();
+      bgEnd.volume = 0;
+    b gEnd.currentTime = 0;
+      bgEnd.pause();
 
     bgStart.play().then(() => {
       bgStart.volume = 0;
@@ -210,11 +213,25 @@ if (messageCount === 7) {
     }).catch(() => {});
   };
 
-  // Ensure bgStart fades out *completely* before bgEnd starts
-  safelyStopAudio(bgStart).then(() => {
-    safelyStartAudio(bgEnd);
-  });
-}
+(async () => {
+  await safelyStopAudio(bgStart);
+
+  // Ensure bgEnd is warmed up (mobile-safe)
+  try {
+    await bgEnd.play();
+    bgEnd.volume = 0;
+    const fadeIn = setInterval(() => {
+      if (bgEnd.volume < 0.5) {
+        bgEnd.volume += 0.01;
+      } else {
+        clearInterval(fadeIn);
+      }
+    }, 150);
+  } catch (err) {
+    console.warn("bgEnd playback failed", err);
+  }
+})();
+
 
 
     if (messageCount >= 9 && !convoEnded) {
