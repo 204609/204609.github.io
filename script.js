@@ -49,7 +49,12 @@ function initAudioContext() {
 
 document.addEventListener('click', initAudioContext, { once: true });
 document.addEventListener('touchstart', initAudioContext, { once: true });
-
+document.addEventListener("DOMContentLoaded", () => {
+  [bgStart, bgEnd].forEach(a => {
+    a.load();
+    a.play().then(() => a.pause()).catch(() => {});
+  });
+});
 const apiKey = "cpk_4b3bcd2fe0074e05a35a4b8b466b00bb.cef167e0cdb452218ffaa138f3a55969.Qi3Ekz5taWY3nm67ZNfWfZUaIPgt3eby";
 const model = "deepseek-ai/DeepSeek-V3-0324";
 
@@ -190,28 +195,48 @@ if the user doesn't talk properly or tries to annoy the ai by spamming or gibber
 }
 
 function crossfadeAudios(fromAudio, toAudio) {
-  const fadeOut = setInterval(() => {
-    if (fromAudio.volume > 0.01) {
-      fromAudio.volume -= 0.01;
-    } else {
-      clearInterval(fadeOut);
-      fromAudio.pause();
-      fromAudio.currentTime = 0;
 
+  const ensurePlayable = () => {
+    return toAudio.play().then(() => {
+      toAudio.pause();
       toAudio.currentTime = 0;
-      toAudio.volume = 0;
-      toAudio.play().then(() => {
-        const fadeIn = setInterval(() => {
-          if (toAudio.volume < 0.5) {
-            toAudio.volume += 0.01;
-          } else {
-            clearInterval(fadeIn);
-          }
-        }, 300);
-      }).catch(() => {});
-    }
-  }, 300);
+    }).catch(() => {});
+  };
+
+  ensurePlayable().then(() => {
+    let fadeOut = setInterval(() => {
+      if (fromAudio.volume > 0.01) {
+        fromAudio.volume -= 0.01;
+      } else {
+        clearInterval(fadeOut);
+        fromAudio.pause();
+        fromAudio.currentTime = 0;
+
+        // After fade out is complete, play and fade in bgEnd
+        toAudio.volume = 0;
+        toAudio.currentTime = 0;
+
+        const tryPlay = () => {
+          toAudio.play().then(() => {
+            const fadeIn = setInterval(() => {
+              if (toAudio.volume < 0.5) {
+                toAudio.volume += 0.01;
+              } else {
+                clearInterval(fadeIn);
+              }
+            }, 300);
+          }).catch((err) => {
+            console.warn("bgEnd autoplay failed:", err);
+            setTimeout(tryPlay, 500); // Retry until mobile user triggers interaction
+          });
+        };
+
+        tryPlay();
+      }
+    }, 300);
+  });
 }
+
 
 function handleSend() {
   if (convoEnded || userInput.disabled) return;
