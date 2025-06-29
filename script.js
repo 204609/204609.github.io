@@ -27,7 +27,7 @@ function initAudioContext() {
 
   try {
     sfxPuck.play().catch(() => {});
-    bgEnd.play().then(() => bgEnd.pause()).catch(() => {});
+      bgEnd.load();
 
     bgStart.play().then(() => {
       bgStart.volume = 0;
@@ -180,31 +180,42 @@ if the user doesn't talk properly or tries to annoy the ai by spamming or gibber
     addMessage(aiMessage, "nova");
     messageCount++;
 
-    if (messageCount === 7) {
-      if (!bgStart.paused) {
-        let fadeOut = setInterval(() => {
-          if (bgStart.volume > 0.01) {
-            bgStart.volume -= 0.01;
-          } else {
-            clearInterval(fadeOut);
-            bgStart.pause();
-            bgStart.currentTime = 0;
-          }
-        }, 300);
-      }
+if (messageCount === 7) {
+  const safelyStopAudio = (audio) => {
+    return new Promise((resolve) => {
+      const fadeOut = setInterval(() => {
+        if (audio.volume > 0.01) {
+          audio.volume -= 0.01;
+        } else {
+          clearInterval(fadeOut);
+          audio.pause();
+          audio.currentTime = 0;
+          resolve();
+        }
+      }, 150);
+    });
+  };
 
-      if (!bgEnd.paused) bgEnd.pause();
-      bgEnd.currentTime = 0;
-      bgEnd.play().then(() => {
-        let fadeIn = setInterval(() => {
-          if (bgEnd.volume < 0.5) {
-            bgEnd.volume += 0.01;
-          } else {
-            clearInterval(fadeIn);
-          }
-        }, 300);
-      }).catch(() => {});
-    }
+  const safelyStartAudio = (audio) => {
+    audio.volume = 0;
+    audio.currentTime = 0;
+    audio.play().then(() => {
+      const fadeIn = setInterval(() => {
+        if (audio.volume < 0.5) {
+          audio.volume += 0.01;
+        } else {
+          clearInterval(fadeIn);
+        }
+      }, 150);
+    }).catch(() => {});
+  };
+
+  // Ensure bgStart fades out *completely* before bgEnd starts
+  safelyStopAudio(bgStart).then(() => {
+    safelyStartAudio(bgEnd);
+  });
+}
+
 
     if (messageCount >= 9 && !convoEnded) {
       endExperience();
